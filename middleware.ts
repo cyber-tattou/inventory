@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { activityLogger } from './lib/middlewares/activity-logger'
+import { activityLogger } from '@/lib/middlewares/activity-logger'
 
 export async function middleware(request: NextRequest) {
   // Run the activity logger

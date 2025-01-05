@@ -1,5 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDb } from '@/lib/db';
+import { Statement } from 'sqlite3';
+
+interface DbRunResult {
+  lastID?: number;
+  changes?: number;
+}
 
 // CRUD operations for invoices
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -10,11 +16,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const invoices = await db.all('SELECT * FROM invoices');
       res.status(200).json(invoices);
       break;
-    case 'POST':
+    case 'POST': {
       const { date, customerName, amount, status } = req.body;
-      const result = await db.run('INSERT INTO invoices (date, customerName, amount, status) VALUES (?, ?, ?, ?)', [date, customerName, amount, status]);
-      res.status(201).json({ id: result.lastID, date, customerName, amount, status });
+      const result = await db.run(
+        'INSERT INTO invoices (date, customerName, amount, status) VALUES (?, ?, ?, ?)',
+        [date, customerName, amount, status]
+      ) as unknown as DbRunResult;
+      
+      res.status(201).json({ 
+        id: result?.lastID || Date.now(), // Fallback ID if lastID is undefined
+        date, 
+        customerName, 
+        amount, 
+        status 
+      });
       break;
+    }
     case 'PUT':
       const { id, updateData } = req.body;
       await db.run('UPDATE invoices SET date = ?, customerName = ?, amount = ?, status = ? WHERE id = ?', [updateData.date, updateData.customerName, updateData.amount, updateData.status, id]);

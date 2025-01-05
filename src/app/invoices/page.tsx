@@ -111,7 +111,10 @@ function InvoicesPage() {
                   <Input
                     id="status"
                     value={newInvoice.status}
-                    onChange={(e) => setNewInvoice({ ...newInvoice, status: e.target.value })}
+                    onChange={(e) => setNewInvoice({ 
+                      ...newInvoice, 
+                      status: e.target.value as "Paid" | "Pending" | "Cancelled" 
+                    })}
                     required
                   />
                 </div>

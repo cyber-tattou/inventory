@@ -7,6 +7,7 @@ import { Overview } from "@/components/overview-chart"
 import { RecentSales } from "@/components/recent-sales"
 import { InventoryOverview } from "@/components/inventory-overview"
 import { StockAlerts } from "@/components/stock-alerts"
+import Link from "next/link"
 
 // Define interface for inventory item
 interface InventoryItem {

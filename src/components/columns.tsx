@@ -22,7 +22,11 @@ export type Invoice = {
   status: string
 }
 
-export const columns: ColumnDef<Invoice>[] = [
+type TableMeta = {
+  onView?: (invoice: Invoice) => void
+}
+
+export const columns: ColumnDef<Invoice, any>[] = [
   {
     accessorKey: "invoiceNumber",
     header: "Invoice Number",
@@ -55,6 +59,7 @@ export const columns: ColumnDef<Invoice>[] = [
     id: "actions",
     cell: ({ row, table }) => {
       const invoice = row.original
+      const meta = table.options.meta as TableMeta
 
       return (
         <DropdownMenu>
@@ -69,7 +74,7 @@ export const columns: ColumnDef<Invoice>[] = [
             <DropdownMenuItem
               onClick={() => {
                 navigator.clipboard.writeText(invoice.id)
-                toast.success({
+                toast({
                   title: "Copied",
                   description: "Invoice ID copied to clipboard"
                 })
@@ -78,7 +83,7 @@ export const columns: ColumnDef<Invoice>[] = [
               Copy invoice ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => table.options.meta?.onView(invoice)}>
+            <DropdownMenuItem onClick={() => meta?.onView?.(invoice)}>
               <Eye className="mr-2 h-4 w-4" />
               View invoice
             </DropdownMenuItem>

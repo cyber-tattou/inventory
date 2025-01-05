@@ -11,6 +11,12 @@ export type Product = {
 };
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getDb } from '@/lib/db';
+import { Statement } from 'sqlite3';
+
+interface DbRunResult {
+  lastID?: number;
+  changes?: number;
+}
 
 // CRUD operations for products
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -23,8 +29,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             break;
         case 'POST':
             const { name, description, price, stock } = req.body;
-            const result = await db.run('INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)', [name, description, price, stock]);
-            res.status(201).json({ id: result.lastID, name, description, price, stock });
+            const result = await db.run(
+                'INSERT INTO products (name, description, price, stock) VALUES (?, ?, ?, ?)',
+                [name, description, price, stock]
+            ) as unknown as DbRunResult;
+            
+            res.status(201).json({ 
+                id: result?.lastID || Date.now(), // Fallback ID if lastID is undefined
+                name, 
+                description, 
+                price, 
+                stock 
+            });
             break;
         case 'PUT':
             const { id, updateData } = req.body;
