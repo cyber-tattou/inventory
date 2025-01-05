@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { toast } from "@/components/ui/use-toast"; // Fix the import path for use-toast
+import { useToast } from "@/components/use-toast"
 import { BarcodeScanner } from "@/components/barcode-scanner"
 
 const movementSchema = z.object({
@@ -47,6 +47,8 @@ export default function NewStockMovementPage() {
       notes: "",
     },
   })
+
+  const { toast } = useToast()
 
   async function onSubmit(values: z.infer<typeof movementSchema>) {
     // In a real app, you would send this data to your API here.
