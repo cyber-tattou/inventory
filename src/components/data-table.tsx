@@ -61,19 +61,15 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter items..."
-          value={
-            filterColumn && table.getColumn(filterColumn) 
-              ? (table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""
-              : ""
-          }
+          placeholder={`Filter by ${filterColumn}...`}
+          value={(table.getColumn(filterColumn)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            filterColumn && table.getColumn(filterColumn)?.setFilterValue(event.target.value)
+            table.getColumn(filterColumn)?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-full sm:max-w-sm"
         />
       </div>
-      <div className="rounded-md border">
+      <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -117,12 +113,13 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex flex-col sm:flex-row items-center justify-end gap-2 py-4">
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="w-full sm:w-auto"
         >
           Previous
         </Button>
@@ -131,6 +128,7 @@ export function DataTable<TData, TValue>({
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="w-full sm:w-auto"
         >
           Next
         </Button>
